@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <section id="loginPage">
+        <div class="login-box">
+            <img src="images/clker.png" alt="شعار الصيدلية" class="system-logo">
+            <h1>نظام إدارة الصيدلية الذكي</h1>
+            <input type="text" id="username" placeholder="اسم المستخدم">
+            <input type="password" id="password" placeholder="كلمة المرور">
+            <button onclick="login()">تسجيل الدخول</button>
+        </div>
+    </section>
+
+    <div id="system" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/clker.png" alt="شعار الصيدلية" class="sidebar-logo">
+                <h2>الصيدلية الذكية</h2>
+            </div>
+            <button onclick="showPage('dashboardPage')">📊 لوحة التحكم</button>
+            <button onclick="showPage('medicinesPage')">💊 إدارة الأدوية</button>
+            <button onclick="showPage('salesPage')">🛒 نقطة البيع (السلة)</button>
+            <button onclick="showPage('invoicesPage')">📑 الفواتير والتقارير</button>
+            <button onclick="showPage('customersPage')">👥 العملاء</button>
+            <button onclick="showPage('suppliersPage')">📦 الموردين</button>
+            <button onclick="showPage('searchPage')">🔍 البحث الشامل</button>
+            <button onclick="logout()" style="background:#fee2e2; color:#b91c1c; margin-top:auto;">🚪 تسجيل الخروج</button>
+        </aside>
+
+        <main class="content">
+            <section id="dashboardPage" class="page">
+                <h1>📊 لوحة التحكم</h1>
+                <div class="cards">
+                    <div class="card"><h3>💰 إجمالي المبيعات</h3><p id="sales">0 ريال</p></div>
+                    <div class="card"><h3>📈 صافي الأرباح الحقيقية</h3><p id="profit">0 ريال</p></div>
+                    <div class="card"><h3>💊 عدد الأدوية المسجلة</h3><p id="medCount">0</p></div>
+                    <div class="card"><h3>👥 إجمالي العملاء</h3><p id="customerCount">0</p></div>
+                </div>
+                <div class="alerts-section">
+                    <div class="alert-box">
+                        <h2>⚠️ أدوية أوشكت على النفاد</h2>
+                        <div id="stockAlerts"></div>
+                    </div>
+                    <div class="alert-box">
+                        <h2>📅 تنبيهات الصلاحية</h2>
+                        <div id="expiryAlerts"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="medicinesPage" class="page" style="display:none;">
+                <h1>💊 إدارة الأدوية</h1>
+                <div class="form-group">
+                    <input type="text" id="medName" placeholder="اسم الدواء">
+                    <input type="number" id="medCost" placeholder="سعر التكلفة (شراء)">
+                    <input type="number" id="medPrice" placeholder="سعر البيع للجمهور">
+                    <input type="number" id="medStock" placeholder="الكمية المتوفرة">
+                    <input type="date" id="medExpiry" placeholder="تاريخ الانتهاء">
+                    <input type="text" id="medImage" placeholder="مسار صورة العلاج (اختياري)">
+                    <button onclick="addMedicine()">إضافة دواء جديد</button>
+                </div>
+                <div id="medList" class="grid-container"></div>
+            </section>
+
+            <section id="salesPage" class="page" style="display:none;">
+                <h1>🛒 نقطة البيع الذكية</h1>
+                <div style="margin-bottom: 15px;">
+                    <label>ربط المبيعات بعميل: </label>
+                    <select id="salesCustomerSelect"><option value="">عميل نقدي سريع</option></select>
+                </div>
+                <div class="sales-layout">
+                    <div id="salesMedicines" class="products-side"></div>
+                    <div class="cart-side">
+                        <h2>🛒 سلة المشتريات</h2>
+                        <div id="cart"></div>
+                        <div id="cartTotal" class="cart-total">الإجمالي: 0 ريال</div>
+                        <button onclick="checkout()" style="width: 100%; margin-top: 15px; padding: 12px;">إتمام عملية البيع وطباعة الفاتورة</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="invoicesPage" class="page" style="display:none;">
+                <h1>📑 سجل الفواتير الصادرة</h1>
+                <div id="invoices" class="grid-container"></div>
+            </section>
+
+            <section id="customersPage" class="page" style="display:none;">
+                <h1>👥 إدارة بيانات العملاء</h1>
+                <div class="form-group">
+                    <input type="text" id="customerName" placeholder="اسم العميل">
+                    <input type="text" id="customerPhone" placeholder="رقم الهاتف">
+                    <button onclick="addCustomer()">إضافة عِميل</button>
+                </div>
+                <div id="customerList" class="grid-container"></div>
+            </section>
+
+            <section id="suppliersPage" class="page" style="display:none;">
+                <h1>📦 إدارة الموردين والشركات</h1>
+                <div class="form-group">
+                    <input type="text" id="supplierName" placeholder="اسم الشركة / المورد">
+                    <input type="text" id="supplierPhone" placeholder="رقم التواصل">
+                    <button onclick="addSupplier()">إضافة مورد</button>
+                </div>
+                <div id="supplierList" class="grid-container"></div>
+            </section>
+
+            <section id="searchPage" class="page" style="display:none;">
+                <h1>🔍 نظام البحث الشامل الرقمي</h1>
+                <input id="searchInput" type="text" placeholder="اكتب للبحث الفوري..." onkeyup="globalSearch()" style="width:100%; margin-bottom: 15px;">
+                <div class="search-tabs">
+                    <button id="tabMed" class="tab-btn active" onclick="switchSearchTab('med')">الأدوية</button>
+                    <button id="tabCust" class="tab-btn" onclick="switchSearchTab('cust')">العملاء</button>
+                    <button id="tabInv" class="tab-btn" onclick="switchSearchTab('inv')">الفواتير</button>
+                </div>
+                <div id="searchResults" class="grid-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="editMedicineModal" class="modal">
+        <div class="modal-content">
+            <h2>✏️ تعديل بيانات الدواء</h2>
+            <input type="hidden" id="editMedId">
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <label>اسم الدواء:</label><input type="text" id="editMedName">
+                <label>سعر التكلفة:</label><input type="number" id="editMedCost">
+                <label>سعر البيع:</label><input type="number" id="editMedPrice">
+                <label>المخزون المتوفر:</label><input type="number" id="editMedStock">
+                <label>تاريخ الانتهاء:</label><input type="date" id="editMedExpiry">
+                <label>مسار صورة العلاج:</label><input type="text" id="editMedImage">
+            </div>
+            <div style="margin-top:20px; text-align: left;">
+                <button onclick="saveMedicineEdit()">💾 حفظ التعديلات</button>
+                <button onclick="closeEditModal()" style="background:#64748b;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="printInvoiceModal" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div id="invoicePrintArea"></div>
+            <div style="margin-top:20px; display: flex; gap: 10px;" class="no-print">
+                <button onclick="window.print()" style="flex: 1; background: #0284c7;">🖨️ طباعة / حفظ كـ PDF</button>
+                <button onclick="closeModal()" style="flex: 1; background: #64748b;">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
